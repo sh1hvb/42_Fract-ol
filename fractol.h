@@ -6,7 +6,7 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 21:13:16 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/22 20:46:00 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/04/23 21:44:58 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ typedef struct s_fract
     int iterations;
     double shift_x;
     double shift_y;
+    double zoom;
 } t_fract;
 
 #endif
