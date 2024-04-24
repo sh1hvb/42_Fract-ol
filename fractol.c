@@ -6,175 +6,215 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 21:13:20 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/23 21:56:44 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/04/24 20:59:30 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "fractol.h"
-void fract_ren(t_fract *fract);
 
-int onclick(int button, int x, int y, t_fract *fract)
+void	fract_ren(t_fract *fract);
+double	scale(double unum, double new_min, double new_max,
+		double old_max);
+int	julia_set(int x, int y, t_fract *fract)
 {
-    if(button == Button4)
-    {
-        fract->zoom*=0.95;
-    }
-    else if(button == Button5)
-        fract->zoom*=1.05;
-    fract_ren(fract);
-    return 0;
+	if (!ft_strncmp("julia", fract->name, 5) || ft_strncmp("mandelbrot",
+			fract->name, 10))
+	{
+		fract->julia_x = (scale(x, -2, +2, 800) * fract->zoom)
+			+ fract->shift_x;
+		fract->julia_y = (scale(y, +2, -2, 800) * fract->zoom)
+			+ fract->shift_y;
+		fract_ren(fract);
+	}
+	return (0);
 }
-int close_win(t_fract *fract)
+void	if_julia(t_cmplx *z, t_cmplx *c, t_fract *fract)
 {
-    mlx_destroy_image(fract->mlx_conn,fract->img.img);
-    mlx_destroy_window(fract->mlx_conn,fract->mlx_win);
-    mlx_destroy_display(fract->mlx_conn);
-    free(fract->mlx_conn);
-    exit(EXIT_SUCCESS);
-    return 0;
+	if (!ft_strncmp("julia", fract->name, 5))
+	{
+		c->x = fract->julia_x;
+		c->y = fract->julia_y;
+	}
+	else
+	{
+		c->x = z->x;
+		c->y = z->y;
+	}
 }
-int onpress(int keysim,t_fract *fract)
+int	onclick(int button, int x, int y, t_fract *fract)
 {
-    if(keysim == XK_Escape)
-        close_win(fract);
-    if(keysim == XK_Left)
-        fract->shift_x-=(0.5 * fract->zoom);
-    else if(keysim == XK_Right)
-        fract->shift_x+=(0.5 * fract->zoom);
-    else if(keysim == XK_Up)
-        fract->shift_y+=(0.5 * fract->zoom);
-    else if(keysim == XK_Down)
-        fract->shift_y-=(0.5 * fract->zoom);
-    else if(keysim == XK_equal)
-        fract->iterations+=10;
-    else if(keysim == XK_minus)
-        fract->iterations-=10;
-    fract_ren(fract);
-    return 0;
+	if (button == Button4)
+	{
+		fract->zoom *= 0.95;
+	}
+	else if (button == Button5)
+		fract->zoom *= 1.05;
+	fract_ren(fract);
+	return (0);
 }
-
-void handle_events(t_fract *fract)
+int	close_win(t_fract *fract)
 {
-    mlx_hook(fract->mlx_win, KeyPress, KeyPressMask, onpress, fract);
-    mlx_hook(fract->mlx_win, ButtonPress, ButtonPressMask, onclick, fract);
-    mlx_hook(fract->mlx_win, DestroyNotify, StructureNotifyMask, close_win, fract);
-
+	mlx_destroy_image(fract->mlx_conn, fract->img.img);
+	mlx_destroy_window(fract->mlx_conn, fract->mlx_win);
+	mlx_destroy_display(fract->mlx_conn);
+	free(fract->mlx_conn);
+	exit(EXIT_SUCCESS);
+	return (0);
 }
-void init_data(t_fract *fract)
+int	onpress(int keysim, t_fract *fract)
 {
-    fract->iterations = 42;
-    fract->escaped = 4 ;
-    fract->shift_x= 0.0;
-    fract->shift_y= 0.0;
-    fract->zoom = 1.0;
-
-}
-t_cmplx sum(t_cmplx z1, t_cmplx z2)
-{
-    t_cmplx r;
-    r.x = z1.x + z2.x;
-    r.y = z1.y + z2.y;
-    return r;
-}
-void pixel_put_in(int x ,int y , t_img *img , int color)
-{
-    int of;
-
-    of = (y * img->len) + (x * (img->bpp / 8));
-    *(unsigned int  *)(img->p_pixels + of) = color;
-}
-t_cmplx square(t_cmplx z)
-{
-    t_cmplx r;
-    
-    r.x= (z.x * z.x) - (z.y * z.y);
-    r.y = 2 * z.x * z.y;
-    return r;
+	if (keysim == XK_Escape)
+		close_win(fract);
+	if (keysim == XK_Left)
+		fract->shift_x -= (0.5 * fract->zoom);
+	else if (keysim == XK_Right)
+		fract->shift_x += (0.5 * fract->zoom);
+	else if (keysim == XK_Up)
+		fract->shift_y += (0.5 * fract->zoom);
+	else if (keysim == XK_Down)
+		fract->shift_y -= (0.5 * fract->zoom);
+	else if (keysim == XK_equal)
+		fract->iterations += 10;
+	else if (keysim == XK_minus)
+		fract->iterations -= 10;
+	fract_ren(fract);
+	return (0);
 }
 
-double scale(double unum, double new_min, double new_max, double old_min, double old_max)
+void	handle_events(t_fract *fract)
 {
-    return (new_max - new_min)* (unum -old_min) / (old_max -old_min) + new_min;
+	mlx_hook(fract->mlx_win, KeyPress, KeyPressMask, onpress, fract);
+	mlx_hook(fract->mlx_win, ButtonPress, ButtonPressMask, onclick, fract);
+	mlx_hook(fract->mlx_win, DestroyNotify, StructureNotifyMask, close_win,
+			fract);
+	mlx_hook(fract->mlx_win, MotionNotify, PointerMotionMask, julia_set, fract);
 }
-void handle_pix(int x, int y, t_fract *fract)
+void	init_data(t_fract *fract)
 {
-    t_cmplx z;
-    t_cmplx c;
-    int i ;
-    int rgb;
+	fract->iterations = 42;
+	fract->escaped = 4;
+	fract->shift_x = 0.0;
+	fract->shift_y = 0.0;
+	fract->zoom = 1.0;
+}
+t_cmplx	sum(t_cmplx z1, t_cmplx z2)
+{
+	t_cmplx	r;
 
-    i = 0;
-    z.x =0;
-    z.y =0;
-    
-    c.x= (scale(x ,-2 ,+2 ,0,800) * fract->zoom )+ fract->shift_x;
-    c.y =( scale(y , +2 ,-2,0 ,800) * fract->zoom) + fract->shift_y;
-    while(i < fract->iterations)
-    {
-        z = sum(square(z) , c);
-        if((z.x * z.x) - (z.y * z.y) > fract->escaped)
-        {
-            rgb = scale(i,BLACK , WHITE, 0 ,fract->iterations);
-            pixel_put_in(x , y , &fract->img, rgb);
-            return;
-        }
-        ++i;
-    }
-    pixel_put_in(x , y , &fract->img,CYAN);
+	r.x = z1.x + z2.x;
+	r.y = z1.y + z2.y;
+	return (r);
+}
+void	pixel_put_in(int x, int y, t_img *img, int color)
+{
+	int	of;
 
+	of = (y * img->len) + (x * (img->bpp / 8));
+	*(unsigned int *)(img->p_pixels + of) = color;
+}
+t_cmplx	square(t_cmplx z)
+{
+	t_cmplx	r;
+
+	r.x = (z.x * z.x) - (z.y * z.y);
+	r.y = 2 * z.x * z.y;
+	return (r);
 }
 
-void fract_ren(t_fract *fract)
+double	scale(double unum, double new_min, double new_max,
+		double old_max)
 {
-    int x;
-    int y;
-
-    // x = 0;
-    y = 0;
-    while (y < 800)
-    {
-        x = 0;
-        while (x < 800)
-        {
-            handle_pix(x,y,fract);
-            x++;
-        }
-        y++;
-    }
-    mlx_put_image_to_window(fract->mlx_conn,fract->mlx_win,fract->img.img, 0, 0);
-    
+	return ((new_max - new_min) * (unum - 0) / (old_max - 0)
+		+ new_min);
 }
-void init_fract(t_fract *fract)
+void	handle_pix(int x, int y, t_fract *fract)
 {
-    fract->mlx_conn= mlx_init();
-    if(NULL == fract->mlx_conn)
-        return;
-    fract->mlx_win = mlx_new_window(fract->mlx_conn,800,800,fract->name);
-    if(fract->mlx_win == NULL)
-    {
-        // mlx_clear_window(fract->mlx_conn, fract->mlx_win);
-        mlx_destroy_display(fract->mlx_conn);
-    }
-    fract->img.img= mlx_new_image(fract->mlx_conn, 800,800);
-    fract->img.p_pixels= mlx_get_data_addr(fract->img.img,&fract->img.bpp,&fract->img.len, &fract->img.endian);
+	t_cmplx	z;
+	t_cmplx	c;
+	int		i;
+	int		rgb;
 
-    init_data(fract);
-    handle_events(fract);
+	i = 0;
+	z.x = (scale(x, -2, +2, 800) * fract->zoom) + fract->shift_x;
+	z.y = (scale(y, +2, -2, 800) * fract->zoom) + fract->shift_y;
+	if_julia(&z, &c, fract);
+	while (i < fract->iterations)
+	{
+		z = sum(square(z), c);
+		if ((z.x * z.x) - (z.y * z.y) > fract->escaped)
+		{
+			rgb = scale(i, BLUE_COLOR_1, BLUE_COLOR_15, fract->iterations);
+			pixel_put_in(x, y, &fract->img, rgb);
+			return ;
+		}
+		++i;
+	}
+	pixel_put_in(x, y, &fract->img, WHITE);
 }
-int main(int ac , char **av)
+
+void	fract_ren(t_fract *fract)
 {
-    t_fract fract;
-    if((ac == 2 && !ft_strncmp(av[1] , "mandelbrot",10) ) || (ac == 4 && !ft_strncmp(av[1],"julia",5)))
-    {
-        fract.name = av[1];
-        init_fract(&fract);
-        fract_ren(&fract);
-        mlx_loop(fract.mlx_conn);
-    }
-    else    
-    {
-        ft_putendl_fd("please enter a correct value",2);
-        exit(1);
-    }
+	int	x;
+	int	y;
+
+	// x = 0;
+	y = 0;
+	while (y < 800)
+	{
+		x = 0;
+		while (x < 800)
+		{
+			handle_pix(x, y, fract);
+			x++;
+		}
+		y++;
+	}
+	mlx_put_image_to_window(fract->mlx_conn, fract->mlx_win, fract->img.img, 0,
+			0);
+}
+void	init_fract(t_fract *fract)
+{
+	fract->mlx_conn = mlx_init();
+	if (NULL == fract->mlx_conn)
+		return ;
+	fract->mlx_win = mlx_new_window(fract->mlx_conn, 800, 800, fract->name);
+	if (fract->mlx_win == NULL)
+	{
+		// mlx_clear_window(fract->mlx_conn, fract->mlx_win);
+		mlx_destroy_display(fract->mlx_conn);
+	}
+	fract->img.img = mlx_new_image(fract->mlx_conn, 800, 800);
+	fract->img.p_pixels = mlx_get_data_addr(fract->img.img, &fract->img.bpp,
+			&fract->img.len, &fract->img.endian);
+	init_data(fract);
+	handle_events(fract);
+}
+int	main(int ac, char **av)
+{
+	t_fract fract;
+	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10)) || (ac == 4
+			&& !ft_strncmp(av[1], "julia", 5)))
+	{
+		fract.name = av[1];
+
+		if (ac == 4 && !ft_strncmp("julia", fract.name, 5))
+		{
+            if((av[2][0] >= '0' && av[2][0] <= '9' || av[2][0] == '-' || av[2][0] == '+' ) && (av[3][0] >= '0' && av[3][0] <= '9' || av[3][0] == '-' ||av[3][0] == '+' ))
+            {
+			    fract.julia_x = atodbl(av[2]);
+			    fract.julia_y = atodbl(av[3]);
+            }
+            else
+					ft_putendl_fd("please enter an integer or float value like '-0.04 +0.24' (real & imaginary)", 2) , exit(EXIT_FAILURE);
+
+		}
+		init_fract(&fract);
+		fract_ren(&fract);
+		mlx_loop(fract.mlx_conn);
+	}
+	else
+	{
+		ft_putendl_fd("please enter a correct value", 2);
+		exit(1);
+	}
 }
