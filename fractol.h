@@ -6,7 +6,7 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 21:13:16 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/24 20:46:03 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/04/26 11:18:44 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 #include <X11/keysym.h>
 #include <X11/X.h>
 
+#define LIGHT_BROWN  0xFFE699 // Light Brown
+#define MEDIUM_BROWN 0x996633 // Medium Brown
+#define DARK_BROWN   0x330000 // Dark Brown
 #define RESET   0x000000
 #define BLACK   0x000000
 #define RED     0xFF0000
@@ -30,21 +33,25 @@
 #define MAGENTA 0xFF00FF
 #define CYAN    0x00FFFF
 #define WHITE   0xFFFFFF
-#define BLUE_COLOR_1 0x100
-#define BLUE_COLOR_2 0x200
-#define BLUE_COLOR_3 0x300
-#define BLUE_COLOR_4 0x400
-#define BLUE_COLOR_5 0x500
-#define BLUE_COLOR_6 0x600
-#define BLUE_COLOR_7 0x700
-#define BLUE_COLOR_8 0x800
-#define BLUE_COLOR_9 0x900
-#define BLUE_COLOR_10 0xA00
-#define BLUE_COLOR_11 0xB00
-#define BLUE_COLOR_12 0xC00
-#define BLUE_COLOR_13 0xD00
-#define BLUE_COLOR_14 0xE00
-#define BLUE_COLOR_15 0xF00
+#define GRAY        0x808080 // Gray
+#define LIGHT_GRAY  0xD3D3D3 // Light Gray
+#define DARK_GRAY   0x696969 // Dark Gray
+#define SILVER      0xC0C0C0 // Silver
+#define GOLD        0xFFD700 // Gold
+#define ORANGE      0xFFA500 // Orange
+#define PINK        0xFFC0CB // Pink
+#define PURPLE      0x800080 // Purple
+#define LAVENDER    0xE6E6FA // Lavender
+#define INDIGO      0x4B0082 // Indigo
+#define TEAL        0x008080 // Teal
+#define AQUA        0x00FFFF // Aqua
+#define DARK_BLUE   0x00008B // Dark Blue
+#define DARK_GREEN  0x006400 // Dark Green
+#define DARK_RED    0x8B0000 // Dark Red
+#define DARK_ORANGE 0xFF8C00 // Dark Orange
+#define DARK_PURPLE 0x800080 // Dark Purple
+#define DARK_CYAN   0x008B8B // Dark Cyan
+
 typedef struct s_cmplx
 {
     double x;
@@ -77,32 +84,21 @@ typedef struct s_fract
     double julia_y;
 } t_fract;
 
-double	atodbl(const char *s)
-{
-	long	integer_part;
-	double	fractional_part;
-	double	pow;
-	int		sign;
-
-	integer_part = 0;
-	fractional_part = 0;
-	sign = 1;
-	pow = 1;
-	while ((*s >= 9 && *s <= 13) || 32 == *s)
-		++s;
-	while ('+' == *s || '-' == *s)
-		if ('-' == *s++)
-			sign *= -1;
-	while (*s != '.' && *s)
-		integer_part = (integer_part * 10) + (*s++ - 48);
-	if ('.' == *s)
-		++s;
-	while (*s)
-	{
-		pow /= 10;
-		fractional_part = fractional_part + (*s++ - 48) * pow;
-	}
-	return ((integer_part + fractional_part) * sign);
-}
+void	init_data(t_fract *fract);
+void	init_fract(t_fract *fract);
+void	if_julia(t_cmplx *z, t_cmplx *c, t_fract *fract);
+void	handle_events(t_fract *fract);
+int	onpress(int keysim, t_fract *fract);
+int	close_win(t_fract *fract);
+int	onclick(int button, int x, int y, t_fract *fract);
+int	julia_set(int x, int y, t_fract *fract);
+int colore(int i, int start_color, int end_color, int iterations);
+t_cmplx	sum(t_cmplx z1, t_cmplx z2);
+void	pixel_put_in(int x, int y, t_img *img, int color);
+t_cmplx	square(t_cmplx z);
+double	scale(double unum, double new_min, double new_max,
+		double old_max);
+void	fract_ren(t_fract *fract);
+// double	atodbl(const char *s);
 
 #endif
