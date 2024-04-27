@@ -6,7 +6,7 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 10:56:45 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/26 10:57:28 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/04/27 01:24:25 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,13 @@ void	init_data(t_fract *fract)
 	fract->escaped = 4;
 	fract->shift_x = 0.0;
 	fract->shift_y = 0.0;
+	fract->zoom_x = 0.0;
+	fract->zoom_y = 0.0;
 	fract->zoom = 1.0;
+fract->x_min_map = -2;
+fract->x_max_map = +2;
+fract->y_max_map = +2;
+fract->y_min_map = -2;
 }
 
 void	init_fract(t_fract *fract)
