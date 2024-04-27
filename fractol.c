@@ -6,7 +6,7 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 21:13:20 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/26 12:35:20 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/04/27 02:14:37 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ void	pixel_put_in(int x, int y, t_img *img, int color)
 	of = (y * img->len) + (x * (img->bpp / 8));
 	*(unsigned int *)(img->p_pixels + of) = color;
 }
+
+
 void	handle_pix(int x, int y, t_fract *fract)
 {
 	t_cmplx	z;
@@ -47,15 +49,15 @@ void	handle_pix(int x, int y, t_fract *fract)
 	int		rgb;
 
 	i = 0;
-	z.x = (scale(x, -2, +2, 800) * fract->zoom) + fract->shift_x;
-	z.y = (scale(y, +2, -2, 800) * fract->zoom) + fract->shift_y;
+	z.x = scale(x, fract->x_min_map , fract->x_max_map , 800) + fract->shift_x;
+	z.y = scale(y, fract->y_max_map , fract->y_min_map , 800) + fract->shift_y;
 	if_julia(&z, &c, fract);
 	while (i < fract->iterations)
 	{
 		z = sum(square(z), c);
-		if ((z.x * z.x) - (z.y * z.y) > fract->escaped)
+		if ((z.x * z.x) - (z.y * z.y) > fract->escaped)	
 		{
-			rgb = colore(i,WHITE , BLACK, fract->iterations);
+			rgb = scale(i,WHITE , BLACK, fract->iterations);
 			pixel_put_in(x, y, &fract->img, rgb);
 			return ;
 		}

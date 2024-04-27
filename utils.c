@@ -6,21 +6,21 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 10:58:19 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/26 12:39:34 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/04/26 20:53:50 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
-int colore(int i, int start_color, int end_color, int iterations)
- {
-    // Calculate the color increments
-    float delta_color = (float)(end_color + start_color) / iterations;
+// int colore(int i, int start_color, int end_color, int iterations)
+//  {
+//     // Calculate the color increments
+//     float delta_color = (float)(end_color + start_color) / iterations;
     
-    // Calculate the color for the given iteration
-    int result = (int)(start_color + delta_color * i);
+//     // Calculate the color for the given iteration
+//     int result = (int)(start_color + delta_color * i);
     
-    return result;
-}
+//     return result;
+// }
 
 t_cmplx	sum(t_cmplx z1, t_cmplx z2)
 {
