@@ -23,6 +23,7 @@ ${NAME}: ${OBJS}
 
 clean:
 	${MAKE} -C ./libft fclean
+	${RM} ${OBJS}
 
 fclean: clean
 	${RM} ${NAME} 

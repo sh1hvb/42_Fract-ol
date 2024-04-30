@@ -6,7 +6,7 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 10:52:29 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/27 02:47:36 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/04/29 21:57:54 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,58 +53,27 @@ int	close_win(t_fract *fract)
 
 
 
-int	onclick(int button, int x, int y, t_fract *fract)
+int onclick(int button, int x, int y, t_fract *fract)
 {
-
     (void)x;
     (void)y;
-	fract->ratio_x = ((long double) x) / 800;
-	fract->ratio_y = ((long double) y) / 800;
+    
+    if (button == Button4) // Zoom in
+    {
+        // Calculate the new range after zooming in
+        fract->zoom *=0.95;
+    }
 	
-	if (button == Button4)
-	{
-		
-		// dprintf(2,"x%d\n", x);
-		// dprintf(2,"y%d\n", y);
-		// fract->zoom *= 0.95 ;
-		 fract->x_min_map -= fract->ratio_x * ZOOM_SENSITIVITY; 
-		 fract->x_max_map += (1 - fract->ratio_x) * ZOOM_SENSITIVITY;
-
-		 fract->y_min_map -=  fract->ratio_y * ZOOM_SENSITIVITY; 
-		fract->y_max_map += (1 - fract->ratio_y) * ZOOM_SENSITIVITY;
-		if(fract->x_min_map >= fract->x_max_map || fract->y_min_map >= fract->y_max_map)
-		{
-			fract->x_min_map += fract->ratio_x * ZOOM_SENSITIVITY; 
-		 fract->x_max_map -= (1 - fract->ratio_x) * ZOOM_SENSITIVITY;
-
-		 fract->y_min_map +=  fract->ratio_y * ZOOM_SENSITIVITY; 
-		fract->y_max_map -= (1 - fract->ratio_y) * ZOOM_SENSITIVITY;
-
-		}
-	}
-	else if (button == Button5)
-	{
-		 fract->x_min_map += fract->ratio_x * ZOOM_SENSITIVITY; 
-		 fract->x_max_map -= (1 - fract->ratio_x) * ZOOM_SENSITIVITY;
-	
-		 fract->y_min_map += (1 - fract->ratio_y) * ZOOM_SENSITIVITY;
-		 fract->y_max_map -= fract->ratio_y * ZOOM_SENSITIVITY;
-		 if(fract->x_min_map >= fract->x_max_map || fract->y_min_map >= fract->y_max_map)
-		{
-			 fract->x_min_map -= fract->ratio_x * ZOOM_SENSITIVITY; 
-		 fract->x_max_map += (1 - fract->ratio_x) * ZOOM_SENSITIVITY;
-	
-		 fract->y_min_map -= (1 - fract->ratio_y) * ZOOM_SENSITIVITY;
-		 fract->y_max_map += fract->ratio_y * ZOOM_SENSITIVITY;
-		}
-		 //fract->zoom *= 1.05 ;
-		 printf("min%Lf\n   xmax%Lf\n",fract->x_min_map,fract->x_max_map);
-		//  printf("min%Lf \n  ymax%Lf\n",fract->y_min_map,fract->y_max_map);
-
-	}	
-	fract_ren(fract);
-	return (0);
+    else if (button == Button5) // Zoom out
+    {
+        fract->zoom *=1.05;
+    }
+    fract_ren(fract);
+        
+    
+    return (0);
 }
+
 // #include <stdio.h>
 
 // typedef struct {

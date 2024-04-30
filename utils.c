@@ -6,7 +6,7 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 10:58:19 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/26 20:53:50 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/04/30 11:58:55 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,37 @@
 //     return result;
 // }
 
-t_cmplx	sum(t_cmplx z1, t_cmplx z2)
+t_cmplx	sum(t_cmplx z1, t_cmplx z2, char *name)
 {
 	t_cmplx	r;
-
-	r.x = z1.x + z2.x;
-	r.y = z1.y + z2.y;
+	(void)name;
+	// if(!ft_strncmp(name , "burning_ship",8))
+	// {
+	// 	r.x = fabs(z1.x ) + z2.x;
+	// 	r.y = fabs(z1.y ) + z2.y;
+	// }
+	// else
+	// {
+		r.x = (z1.x + z2.x);
+		r.y = (z1.y + z2.y);
+	// }
 	return (r);
 }
 
-t_cmplx	square(t_cmplx z)
+t_cmplx	square(t_cmplx z, char * name)
 {
 	t_cmplx	r;
-
-	r.x = (z.x * z.x) - (z.y * z.y);
-	r.y = 2 * z.x * z.y;
+	if(!ft_strncmp(name , "burning_ship",8))
+	{
+		r.x = fabs((z.x * z.x - z.y * z.y ));
+		r.y = fabs((2 * z.x * z.y ));
+	}
+	else
+	{
+		r.x = (z.x * z.x) - (z.y * z.y);
+		r.y = 2 * z.x * z.y;
+	}
+	
 	return (r);
 }
 

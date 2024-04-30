@@ -6,7 +6,7 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 21:13:16 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/27 01:37:09 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/04/30 11:21:35 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@
 #include <X11/X.h>
 
 #define ZOOM_SENSITIVITY 0.1f
+#define MINIMUM_RANGE 0.001 // Adjust this value based on your requirements
+#define MAXIMUM_RANGE 90000000.0f// Adjust this value based on your requirements
 
 #define LIGHT_BROWN  0xFFE699 // Light Brown
 #define MEDIUM_BROWN 0x996633 // Medium Brown
@@ -30,10 +32,8 @@
 #define BLACK   0x000000
 #define RED     0xFF0000
 #define GREEN  0x00FF00
-#define YELLOW  0xFFFF00
-#define BLUE    0x0000FF
-#define MAGENTA 0xFF00FF
-#define CYAN    0x00FFFF
+#define YELLOW  0xFFFF00100
+#define MAGENTA 0xFF00FF100
 #define WHITE   0xFFFFFF
 #define GRAY        0x808080 // Gray
 #define LIGHT_GRAY  0xD3D3D3 // Light Gray
@@ -103,12 +103,12 @@ int	close_win(t_fract *fract);
 int	onclick(int button, int x, int y, t_fract *fract);
 // int	julia_set(int x, int y, t_fract *fract);
 // int colore(int i, int start_color, int end_color, int iterations);
-t_cmplx	sum(t_cmplx z1, t_cmplx z2);
+t_cmplx	sum(t_cmplx z1, t_cmplx z2, char *name);
 void	pixel_put_in(int x, int y, t_img *img, int color);
-t_cmplx	square(t_cmplx z);
+t_cmplx	square(t_cmplx z, char *name);
 double	scale(double unum, double new_min, double new_max,
 		double old_max);
 void	fract_ren(t_fract *fract);
-// double	atodbl(const char *s);
+double	atodbl(const char *s);
 
 #endif
