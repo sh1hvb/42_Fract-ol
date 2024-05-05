@@ -6,22 +6,20 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 10:52:29 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/27 02:47:36 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/05/05 12:03:23 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-
-
 void	handle_events(t_fract *fract)
 {
-	// mlx_hook(fract->mlx_win, MotionNotify, PointerMotionMask, onmove, fract);
 	mlx_hook(fract->mlx_win, KeyPress, KeyPressMask, onpress, fract);
 	mlx_hook(fract->mlx_win, ButtonPress, ButtonPressMask, onclick, fract);
-	mlx_hook(fract->mlx_win, DestroyNotify, StructureNotifyMask, close_win,
-			fract);
+	mlx_hook(fract->mlx_win, DestroyNotify, StructureNotifyMask,
+		close_win, fract);
 }
+
 int	onpress(int keysim, t_fract *fract)
 {
 	if (keysim == XK_Escape)
@@ -41,6 +39,7 @@ int	onpress(int keysim, t_fract *fract)
 	fract_ren(fract);
 	return (0);
 }
+
 int	close_win(t_fract *fract)
 {
 	mlx_destroy_image(fract->mlx_conn, fract->img.img);
@@ -51,101 +50,14 @@ int	close_win(t_fract *fract)
 	return (0);
 }
 
-
-
 int	onclick(int button, int x, int y, t_fract *fract)
 {
-
-    (void)x;
-    (void)y;
-	fract->ratio_x = ((long double) x) / 800;
-	fract->ratio_y = ((long double) y) / 800;
-	
+	(void)x;
+	(void)y;
 	if (button == Button4)
-	{
-		
-		// dprintf(2,"x%d\n", x);
-		// dprintf(2,"y%d\n", y);
-		// fract->zoom *= 0.95 ;
-		 fract->x_min_map -= fract->ratio_x * ZOOM_SENSITIVITY; 
-		 fract->x_max_map += (1 - fract->ratio_x) * ZOOM_SENSITIVITY;
-
-		 fract->y_min_map -=  fract->ratio_y * ZOOM_SENSITIVITY; 
-		fract->y_max_map += (1 - fract->ratio_y) * ZOOM_SENSITIVITY;
-		if(fract->x_min_map >= fract->x_max_map || fract->y_min_map >= fract->y_max_map)
-		{
-			fract->x_min_map += fract->ratio_x * ZOOM_SENSITIVITY; 
-		 fract->x_max_map -= (1 - fract->ratio_x) * ZOOM_SENSITIVITY;
-
-		 fract->y_min_map +=  fract->ratio_y * ZOOM_SENSITIVITY; 
-		fract->y_max_map -= (1 - fract->ratio_y) * ZOOM_SENSITIVITY;
-
-		}
-	}
+		fract->zoom *= 0.95;
 	else if (button == Button5)
-	{
-		 fract->x_min_map += fract->ratio_x * ZOOM_SENSITIVITY; 
-		 fract->x_max_map -= (1 - fract->ratio_x) * ZOOM_SENSITIVITY;
-	
-		 fract->y_min_map += (1 - fract->ratio_y) * ZOOM_SENSITIVITY;
-		 fract->y_max_map -= fract->ratio_y * ZOOM_SENSITIVITY;
-		 if(fract->x_min_map >= fract->x_max_map || fract->y_min_map >= fract->y_max_map)
-		{
-			 fract->x_min_map -= fract->ratio_x * ZOOM_SENSITIVITY; 
-		 fract->x_max_map += (1 - fract->ratio_x) * ZOOM_SENSITIVITY;
-	
-		 fract->y_min_map -= (1 - fract->ratio_y) * ZOOM_SENSITIVITY;
-		 fract->y_max_map += fract->ratio_y * ZOOM_SENSITIVITY;
-		}
-		 //fract->zoom *= 1.05 ;
-		 printf("min%Lf\n   xmax%Lf\n",fract->x_min_map,fract->x_max_map);
-		//  printf("min%Lf \n  ymax%Lf\n",fract->y_min_map,fract->y_max_map);
-
-	}	
+		fract->zoom *= 1.05;
 	fract_ren(fract);
 	return (0);
 }
-// #include <stdio.h>
-
-// typedef struct {
-//     double zoom;
-//     // Other members of t_fract
-// } t_fract;
-
-// int onclick(int button, int x, int y, t_fract *fract)
-// {
-//     // Adjust zoom based on mouse position
-//     double zoom_factor = 0.05; // You can adjust this factor as needed
-    
-//     if (button == Button4) // Zoom in
-//     {
-//         fract->zoom *= (1.0 - zoom_factor);
-//         fract->zoom_x += (x - fract->width / 2) * zoom_factor;
-//         fract->zoom_y += (y - fract->height / 2) * zoom_factor;
-//     }
-//     else if (button == Button5) // Zoom out
-//     {
-//         fract->zoom *= (1.0 + zoom_factor);
-//         fract->zoom_x -= (x - fract->width / 2) * zoom_factor;
-//         fract->zoom_y -= (y - fract->height / 2) * zoom_factor;
-//     }
-
-//     fract_ren(fract); // Render fractal with new zoom
-//     return (0);
-// }
-
-
-
-// int	julia_set(int x, int y, t_fract *fract)
-// {
-// 	if (!ft_strncmp("julia", fract->name, 5) || ft_strncmp("mandelbrot",
-// 			fract->name, 10))
-// 	{
-// 		fract->julia_x = (scale(x, -2, +2, 800) * fract->zoom)
-// 			+ fract->shift_x;
-// 		fract->julia_y = (scale(y, +2, -2, 800) * fract->zoom)
-// 			+ fract->shift_y;
-// 		fract_ren(fract);
-// 	}
-// 	return (0);
-// }

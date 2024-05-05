@@ -6,32 +6,35 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 21:13:20 by mchihab           #+#    #+#             */
-/*   Updated: 2024/04/27 02:14:37 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/05/05 11:58:07 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-
-int check_double(char *av)
+int	check_double(char *av)
 {
-	int i;
-	int p;
+	int	i;
+	int	p;
+
 	i = 0;
 	p = 0;
-	while(av[i])
+	while (av[i])
 	{
-		if(av[i]== '-' || av[i]== '+')
+		while (av[i] <= 32)
+			i++;
+		if (av[i] == '-' || av[i] == '+')
 			i++;
 		if (av[i] == '.' && i != 0)
 			p += 1;
-		if((av[i] >= '0' && av[i] <= '9') || p == 1)
-				i++;
-		else 
-			return 0;
+		if ((av[i] >= '0' && av[i] <= '9') || p == 1)
+			i++;
+		else
+			return (0);
 	}
-	return 1;
+	return (1);
 }
+
 void	pixel_put_in(int x, int y, t_img *img, int color)
 {
 	int	of;
@@ -39,7 +42,6 @@ void	pixel_put_in(int x, int y, t_img *img, int color)
 	of = (y * img->len) + (x * (img->bpp / 8));
 	*(unsigned int *)(img->p_pixels + of) = color;
 }
-
 
 void	handle_pix(int x, int y, t_fract *fract)
 {
@@ -49,21 +51,21 @@ void	handle_pix(int x, int y, t_fract *fract)
 	int		rgb;
 
 	i = 0;
-	z.x = scale(x, fract->x_min_map , fract->x_max_map , 800) + fract->shift_x;
-	z.y = scale(y, fract->y_max_map , fract->y_min_map , 800) + fract->shift_y;
+	z.x = scale(x, -2, +2, 800) * fract->zoom + fract->shift_x;
+	z.y = scale(y, +2, -2, 800) * fract->zoom + fract->shift_y;
 	if_julia(&z, &c, fract);
 	while (i < fract->iterations)
 	{
-		z = sum(square(z), c);
-		if ((z.x * z.x) - (z.y * z.y) > fract->escaped)	
+		z = sum(square(z, fract->name), c, fract->name);
+		if ((z.x * z.x) + (z.y * z.y) > fract->escaped)
 		{
-			rgb = scale(i,WHITE , BLACK, fract->iterations);
+			rgb = calculate_color(i, fract->iterations);
 			pixel_put_in(x, y, &fract->img, rgb);
 			return ;
 		}
 		++i;
 	}
-	pixel_put_in(x, y, &fract->img, DARK_BLUE);
+	pixel_put_in(x, y, &fract->img, BLACK);
 }
 
 void	fract_ren(t_fract *fract)
@@ -71,7 +73,6 @@ void	fract_ren(t_fract *fract)
 	int	x;
 	int	y;
 
-	// x = 0;
 	y = 0;
 	while (y < 800)
 	{
@@ -83,37 +84,33 @@ void	fract_ren(t_fract *fract)
 		}
 		y++;
 	}
-	mlx_put_image_to_window(fract->mlx_conn, fract->mlx_win, fract->img.img, 0,
-			0);
+	mlx_put_image_to_window(fract->mlx_conn, fract->mlx_win,
+		fract->img.img, 0, 0);
 }
+
 int	main(int ac, char **av)
 {
-	t_fract fract;
-	if ((ac == 2 && !ft_strncmp(av[1], "mandelbrot", 10)) || (ac == 4
-			&& !ft_strncmp(av[1], "julia", 5)))
+	t_fract	fract;
+
+	if ((ac == 2 && !ft_strcmp(av[1], "burning_ship")) || (ac == 2
+			&& !ft_strcmp(av[1], "mandelbrot")) || ((ac == 4 || ac == 2)
+			&& !ft_strcmp(av[1], "julia")))
 	{
 		fract.name = av[1];
-
-		if (ac == 4 && !ft_strncmp("julia", fract.name, 5))
+		if (!ft_strcmp("julia", fract.name))
 		{
-            if(check_double(av[2]) && check_double(av[3]))
-            {
-			    fract.julia_x = (double)atof(av[2]);
-				// dprintf(2,"%f\n",atof(av[2]));
-			    fract.julia_y = (double)atof(av[3]);
-				// dprintf(2,"%f\n",atof(av[3]));
-            }
-            else
-					ft_putendl_fd("please enter a correct value like '-0.04 +0.24' (real & imaginary)", 2) , exit(EXIT_FAILURE);
-
+			if (ac == 4 && check_double(av[2]) && check_double(av[3]))
+				init_julia(&fract, av, 0);
+			else if (ac == 2)
+				init_julia(&fract, av, 1);
+			else
+				ft_putendl_fd("incorrect value", 2);
 		}
 		init_fract(&fract);
 		fract_ren(&fract);
 		mlx_loop(fract.mlx_conn);
 	}
 	else
-	{
-		ft_putendl_fd("please enter a correct value", 2);
-		exit(1);
-	}
+		ft_putendl_fd("values disponible (julia) (mandelbrot)\
+		(burning_ship)", 2);
 }

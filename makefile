@@ -7,8 +7,7 @@ SRCS = fractol.c init.c julia.c utils.c events.c
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror 
-
+CFLAGS = -Wall -Wextra -Werror -g
 
 RM = rm -rf
 
@@ -23,6 +22,7 @@ ${NAME}: ${OBJS}
 
 clean:
 	${MAKE} -C ./libft fclean
+	${RM} ${OBJS}
 
 fclean: clean
 	${RM} ${NAME} 
