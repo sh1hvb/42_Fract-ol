@@ -6,7 +6,7 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 21:13:20 by mchihab           #+#    #+#             */
-/*   Updated: 2024/05/05 11:58:07 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/05/07 12:17:52 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,10 @@ void	handle_pix(int x, int y, t_fract *fract)
 	int		rgb;
 
 	i = 0;
-	z.x = scale(x, -2, +2, 800) * fract->zoom + fract->shift_x;
-	z.y = scale(y, +2, -2, 800) * fract->zoom + fract->shift_y;
+	z.y = scale(y, -2, +2, 800) * fract->zoom + fract->shift_y;
+	z.x= scale(x, +2, -2, 800) * fract->zoom + fract->shift_x;
 	if_julia(&z, &c, fract);
-	while (i < fract->iterations)
+	while (i <= fract->iterations)
 	{
 		z = sum(square(z, fract->name), c, fract->name);
 		if ((z.x * z.x) + (z.y * z.y) > fract->escaped)
@@ -86,6 +86,8 @@ void	fract_ren(t_fract *fract)
 	}
 	mlx_put_image_to_window(fract->mlx_conn, fract->mlx_win,
 		fract->img.img, 0, 0);
+	put_str(fract);
+
 }
 
 int	main(int ac, char **av)
