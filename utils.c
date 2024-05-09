@@ -6,7 +6,7 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 10:58:19 by mchihab           #+#    #+#             */
-/*   Updated: 2024/05/05 12:04:51 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/05/07 12:14:50 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ t_cmplx	square(t_cmplx z, char *name)
 
 	if (!ft_strncmp(name, "burning_ship", 8))
 	{
+		
 		r.x = fabs((z.x * z.x - z.y * z.y));
 		r.y = fabs((2 * z.x * z.y));
 	}

@@ -6,7 +6,7 @@
 /*   By: mchihab <mchihab@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 21:13:16 by mchihab           #+#    #+#             */
-/*   Updated: 2024/05/05 12:07:33 by mchihab          ###   ########.fr       */
+/*   Updated: 2024/05/05 13:19:28 by mchihab          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,5 +109,5 @@ void			init_julia(t_fract *fract, char **av, int check);
 void			fract_ren(t_fract *fract);
 int				calculate_color(int iteration, int max_iterations);
 double			atodbl(const char *s);
-
+void put_str(t_fract *fract);
 #endif
